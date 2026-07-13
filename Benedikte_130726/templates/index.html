@@ -3,70 +3,1076 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Memorizer</title>
+    <title>Typing Memorizer — El Camino del Guerrero</title>
+
+    <!-- Google Fonts: Ma Shan Zheng (calligraphic brush) + Noto Sans SC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
-        .hidden { display: none; }
-        #text-display { background: #f0f0f0; padding: 20px; border-radius: 5px; margin: 20px 0; font-size: 18px; }
-        #typing-input { width: 100%; padding: 10px; font-size: 16px; border: 2px solid #ccc; border-radius: 5px; }
-        .correct { color: green; }
-        .incorrect { color: red; background: #ffe6e6; }
-        button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin: 5px; }
-        #feedback { margin-top: 20px; font-size: 18px; }
+        /* ═══════════════════════════════════════════════════════════════
+           PALETA DE COLORES — TEMÁTICA MULÁN / CHINA ANTIGUA
+           ═══════════════════════════════════════════════════════════════ */
+        :root {
+            /* Rojos imperiales */
+            --imperial-red: #8B1A1A;
+            --imperial-red-dark: #5C0F0F;
+            --imperial-red-light: #B83030;
+            --vermillion: #C23B22;
+
+            /* Dorados */
+            --gold: #D4AF37;
+            --gold-light: #F0D878;
+            --gold-dark: #9A7B1A;
+            --gold-pale: #FFF5CC;
+
+            /* Jade */
+            --jade: #2E8B57;
+            --jade-light: #4CAF7A;
+            --jade-dark: #1A5C38;
+            --jade-pale: #E8F5E9;
+
+            /* Tonos tinta */
+            --ink-black: #1A1A1A;
+            --ink-soft: #3D3D3D;
+            --ink-gray: #6B6B6B;
+            --ink-pale: #9E9E9E;
+            --parchment: #FDF6E3;
+            --parchment-dark: #F0E6CC;
+
+            /* Rosa cerezo / magnolia */
+            --cherry-blossom: #FFB7C5;
+            --cherry-blossom-soft: #FFD1DC;
+            --cherry-blossom-pale: #FFF0F3;
+            --magnolia: #F8F0FF;
+
+            /* Sombras y profundidad */
+            --shadow-soft: rgba(91, 15, 15, 0.12);
+            --shadow-medium: rgba(91, 15, 15, 0.2);
+            --shadow-deep: rgba(91, 15, 15, 0.35);
+            --gold-glow: rgba(212, 175, 55, 0.3);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           RESET & BASE
+           ═══════════════════════════════════════════════════════════════ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans', 'Noto Serif SC', sans-serif;
+            background: var(--parchment);
+            min-height: 100vh;
+            color: var(--ink-soft);
+            line-height: 1.7;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           FONDO CON PATRONES SUTILES (CSS puro — sin imágenes externas)
+           ═══════════════════════════════════════════════════════════════ */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                /* Patrón de nubes auspiciosas (cloud pattern) */
+                radial-gradient(ellipse 120px 60px at 10% 20%, rgba(255,183,197,0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 100px 50px at 80% 15%, rgba(255,183,197,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 140px 70px at 60% 80%, rgba(255,183,197,0.05) 0%, transparent 70%),
+                radial-gradient(ellipse 90px 45px at 25% 70%, rgba(255,183,197,0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 110px 55px at 90% 60%, rgba(255,183,197,0.04) 0%, transparent 70%),
+
+                /* Pétalos de cerezo dispersos */
+                radial-gradient(ellipse 8px 12px at 15% 35%, rgba(255,183,197,0.25) 0%, transparent 100%),
+                radial-gradient(ellipse 6px 10px at 45% 10%, rgba(255,183,197,0.2) 0%, transparent 100%),
+                radial-gradient(ellipse 10px 14px at 75% 40%, rgba(255,183,197,0.18) 0%, transparent 100%),
+                radial-gradient(ellipse 7px 11px at 30% 85%, rgba(255,183,197,0.22) 0%, transparent 100%),
+                radial-gradient(ellipse 9px 13px at 85% 75%, rgba(255,183,197,0.15) 0%, transparent 100%),
+                radial-gradient(ellipse 5px 9px at 55% 55%, rgba(255,183,197,0.2) 0%, transparent 100%),
+
+                /* Degradado acuarela sutil */
+                radial-gradient(ellipse 600px 400px at 100% 0%, rgba(139,26,26,0.04) 0%, transparent 60%),
+                radial-gradient(ellipse 500px 350px at 0% 100%, rgba(46,139,87,0.04) 0%, transparent 60%),
+                radial-gradient(ellipse 400px 300px at 50% 50%, rgba(212,175,55,0.03) 0%, transparent 60%);
+        }
+
+        /* Patrón de bambú vertical sutil */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.04;
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    transparent 0px,
+                    transparent 60px,
+                    var(--jade) 60px,
+                    var(--jade) 62px,
+                    transparent 62px,
+                    transparent 120px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent 0px,
+                    transparent 80px,
+                    var(--jade) 80px,
+                    var(--jade) 81px,
+                    transparent 81px,
+                    transparent 160px
+                );
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           LAYOUT PRINCIPAL
+           ═══════════════════════════════════════════════════════════════ */
+        .main-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           HEADER / TÍTULO
+           ═══════════════════════════════════════════════════════════════ */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding: 30px 20px;
+        }
+
+        .page-header::before,
+        .page-header::after {
+            content: '❖';
+            display: block;
+            color: var(--gold);
+            font-size: 1.2rem;
+            margin: 10px 0;
+            opacity: 0.6;
+            letter-spacing: 8px;
+        }
+
+        .page-header h1 {
+            font-family: 'Ma Shan Zheng', 'Cinzel', serif;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            color: var(--imperial-red);
+            text-shadow: 
+                2px 2px 4px var(--shadow-soft),
+                0 0 30px var(--gold-glow);
+            letter-spacing: 4px;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .page-header .subtitle {
+            font-family: 'Noto Serif SC', serif;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            color: var(--ink-gray);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        .page-header .subtitle::before,
+        .page-header .subtitle::after {
+            content: '—';
+            color: var(--gold);
+            margin: 0 12px;
+            font-weight: 300;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           TARJETA / CONTENEDOR PRINCIPAL (estilo pergamino con marco de biombo)
+           ═══════════════════════════════════════════════════════════════ */
+        .card {
+            background: linear-gradient(145deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 4px;
+            padding: 0;
+            width: 100%;
+            max-width: 720px;
+            box-shadow:
+                0 4px 20px var(--shadow-soft),
+                0 8px 40px var(--shadow-medium),
+                inset 0 1px 0 rgba(255,255,255,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Marco interior tipo ventana de jardín chino */
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Esquinas decorativas tipo biombo */
+        .card-corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .card-corner::before,
+        .card-corner::after {
+            content: '';
+            position: absolute;
+            background: var(--gold);
+            opacity: 0.5;
+        }
+        .card-corner.tl { top: 4px; left: 4px; }
+        .card-corner.tl::before { top: 0; left: 0; width: 30px; height: 2px; }
+        .card-corner.tl::after { top: 0; left: 0; width: 2px; height: 30px; }
+
+        .card-corner.tr { top: 4px; right: 4px; }
+        .card-corner.tr::before { top: 0; right: 0; width: 30px; height: 2px; }
+        .card-corner.tr::after { top: 0; right: 0; width: 2px; height: 30px; }
+
+        .card-corner.bl { bottom: 4px; left: 4px; }
+        .card-corner.bl::before { bottom: 0; left: 0; width: 30px; height: 2px; }
+        .card-corner.bl::after { bottom: 0; left: 0; width: 2px; height: 30px; }
+
+        .card-corner.br { bottom: 4px; right: 4px; }
+        .card-corner.br::before { bottom: 0; right: 0; width: 30px; height: 2px; }
+        .card-corner.br::after { bottom: 0; right: 0; width: 2px; height: 30px; }
+
+        .card-body {
+            padding: 40px 35px;
+            position: relative;
+            z-index: 3;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           SECCIÓN DE SUBIDA
+           ═══════════════════════════════════════════════════════════════ */
+        .section-title {
+            font-family: 'Ma Shan Zheng', serif;
+            font-size: 1.6rem;
+            color: var(--imperial-red);
+            text-align: center;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+
+        .section-title .chinese-char {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.7em;
+            color: var(--gold-dark);
+            display: block;
+            margin-top: 4px;
+            letter-spacing: 8px;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--gold);
+            border-radius: 8px;
+            padding: 40px 25px;
+            text-align: center;
+            background: rgba(212, 175, 55, 0.04);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(212,175,55,0.15) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: var(--imperial-red);
+            background: rgba(139, 26, 26, 0.04);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow-soft);
+        }
+
+        .upload-area:hover::before {
+            opacity: 1;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-area:hover .upload-icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .upload-text {
+            font-size: 1rem;
+            color: var(--ink-gray);
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 0.85rem;
+            color: var(--ink-pale);
+        }
+
+        /* Input file oculto, estilizado */
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           BOTONES
+           ═══════════════════════════════════════════════════════════════ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 32px;
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 160px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* Botón primario — Rojo imperial */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--imperial-red) 0%, var(--imperial-red-dark) 100%);
+            color: var(--gold-pale);
+            border: 2px solid var(--gold);
+            box-shadow: 
+                0 4px 15px var(--shadow-medium),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--imperial-red-light) 0%, var(--imperial-red) 100%);
+            box-shadow: 
+                0 6px 25px var(--shadow-deep),
+                0 0 20px var(--gold-glow),
+                inset 0 1px 0 rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px var(--shadow-medium);
+        }
+
+        /* Botón secundario — Jade */
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--jade) 0%, var(--jade-dark) 100%);
+            color: white;
+            border: 2px solid var(--jade-light);
+            box-shadow: 0 4px 15px rgba(46,139,87,0.2);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--jade-light) 0%, var(--jade) 100%);
+            box-shadow: 0 6px 25px rgba(46,139,87,0.3), 0 0 15px rgba(76,175,122,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Botón dorado / outline */
+        .btn-gold {
+            background: transparent;
+            color: var(--gold-dark);
+            border: 2px solid var(--gold);
+            box-shadow: 0 2px 10px var(--shadow-soft);
+        }
+
+        .btn-gold:hover {
+            background: linear-gradient(135deg, var(--gold-pale) 0%, rgba(212,175,55,0.1) 100%);
+            color: var(--imperial-red);
+            border-color: var(--imperial-red);
+            box-shadow: 0 4px 20px var(--gold-glow);
+            transform: translateY(-2px);
+        }
+
+        /* Separador decorativo */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+            color: var(--gold);
+            font-size: 1.2rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           SECCIÓN DE ESCRITURA / TYPING
+           ═══════════════════════════════════════════════════════════════ */
+        .typing-section {
+            display: none;
+        }
+
+        .typing-section.active {
+            display: block;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Contador de líneas */
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, rgba(139,26,26,0.06) 0%, rgba(212,175,55,0.06) 100%);
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 6px;
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 6px;
+            background: rgba(212,175,55,0.15);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--imperial-red), var(--gold));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 8px var(--gold-glow);
+        }
+
+        .progress-text {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.85rem;
+            color: var(--imperial-red);
+            white-space: nowrap;
+            letter-spacing: 1px;
+        }
+
+        /* Área de texto a memorizar */
+        .text-display {
+            background: linear-gradient(145deg, #FFFBF0 0%, var(--parchment) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 6px;
+            padding: 28px 24px;
+            margin-bottom: 25px;
+            font-family: 'Noto Serif SC', 'Georgia', serif;
+            font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+            line-height: 2;
+            color: var(--ink-soft);
+            text-align: center;
+            letter-spacing: 0.5px;
+            position: relative;
+            box-shadow: 
+                inset 0 2px 8px rgba(139,26,26,0.05),
+                0 2px 10px var(--shadow-soft);
+        }
+
+        /* Sello decorativo en la esquina */
+        .text-display::after {
+            content: '印';
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            font-family: 'Ma Shan Zheng', serif;
+            font-size: 1.8rem;
+            color: var(--imperial-red);
+            opacity: 0.15;
+            transform: rotate(-12deg);
+        }
+
+        /* Input de escritura */
+        .typing-input-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .typing-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 1.1rem;
+            color: var(--ink-soft);
+            background: linear-gradient(145deg, #FFFBF0 0%, var(--parchment) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 6px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 8px rgba(139,26,26,0.05);
+        }
+
+        .typing-input::placeholder {
+            color: var(--ink-pale);
+            font-style: italic;
+        }
+
+        .typing-input:focus {
+            border-color: var(--imperial-red);
+            box-shadow: 
+                0 0 0 3px rgba(139,26,26,0.1),
+                0 4px 15px var(--shadow-soft),
+                inset 0 2px 8px rgba(139,26,26,0.05);
+        }
+
+        /* Feedback */
+        .feedback {
+            text-align: center;
+            padding: 14px 20px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.05rem;
+            letter-spacing: 1px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, rgba(46,139,87,0.1) 0%, rgba(76,175,122,0.08) 100%);
+            border: 1px solid var(--jade);
+            color: var(--jade-dark);
+            box-shadow: 0 2px 10px rgba(46,139,87,0.1);
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, rgba(139,26,26,0.08) 0%, rgba(194,59,34,0.06) 100%);
+            border: 1px solid var(--vermillion);
+            color: var(--imperial-red);
+            box-shadow: 0 2px 10px rgba(139,26,26,0.1);
+        }
+
+        .feedback.neutral {
+            background: linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(212,175,55,0.04) 100%);
+            border: 1px solid rgba(212,175,55,0.3);
+            color: var(--gold-dark);
+        }
+
+        .feedback-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Botones de acción */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           ESTADO COMPLETADO
+           ═══════════════════════════════════════════════════════════════ */
+        .completed-state {
+            text-align: center;
+            padding: 50px 20px;
+            display: none;
+        }
+
+        .completed-state.active {
+            display: block;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .completed-state .trophy {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .completed-state h2 {
+            font-family: 'Ma Shan Zheng', serif;
+            font-size: 2rem;
+            color: var(--imperial-red);
+            margin-bottom: 10px;
+        }
+
+        .completed-state p {
+            color: var(--ink-gray);
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════════════════════════ */
+        @media (max-width: 640px) {
+            .main-wrapper {
+                padding: 20px 12px;
+            }
+
+            .card-body {
+                padding: 25px 18px;
+            }
+
+            .page-header {
+                padding: 20px 10px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .text-display {
+                padding: 20px 16px;
+                font-size: 1rem;
+            }
+
+            .upload-area {
+                padding: 30px 15px;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           ANIMACIONES ADICIONALES
+           ═══════════════════════════════════════════════════════════════ */
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .shimmer-text {
+            background: linear-gradient(90deg, var(--gold-dark), var(--gold-light), var(--gold-dark));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
+
+        /* Efecto de partículas doradas sutiles (CSS puro) */
+        .gold-particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--gold);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 8s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 10s; }
+        .particle:nth-child(2) { left: 25%; animation-delay: 2s; animation-duration: 12s; }
+        .particle:nth-child(3) { left: 40%; animation-delay: 4s; animation-duration: 9s; }
+        .particle:nth-child(4) { left: 55%; animation-delay: 1s; animation-duration: 11s; }
+        .particle:nth-child(5) { left: 70%; animation-delay: 3s; animation-duration: 13s; }
+        .particle:nth-child(6) { left: 85%; animation-delay: 5s; animation-duration: 10s; }
+        .particle:nth-child(7) { left: 15%; animation-delay: 6s; animation-duration: 14s; }
+        .particle:nth-child(8) { left: 60%; animation-delay: 7s; animation-duration: 11s; }
+
+        @keyframes particleFloat {
+            0% { 
+                transform: translateY(100vh) scale(0); 
+                opacity: 0; 
+            }
+            10% { 
+                opacity: 0.6; 
+            }
+            50% { 
+                opacity: 0.3; 
+            }
+            90% { 
+                opacity: 0.1; 
+            }
+            100% { 
+                transform: translateY(-10vh) scale(1); 
+                opacity: 0; 
+            }
+        }
+
+        /* Hidden utility */
+        .hidden { display: none !important; }
     </style>
+<base target="_blank">
 </head>
 <body>
-    <h1>Typing Memorizer</h1>
-    <div id="upload-section">
-        <h2>Sube tu archivo de texto</h2>
-        <input type="file" id="file-input" accept=".txt">
-        <button onclick="uploadFile()">Cargar</button>
+    <!-- Partículas doradas sutiles -->
+    <div class="gold-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
     </div>
-    <div id="typing-section" class="hidden">
-        <h2>Escribe el texto</h2>
-        <div id="text-display"></div>
-        <input type="text" id="typing-input" placeholder="Escribe aquí..." autocomplete="off">
-        <div id="feedback"></div>
-        <button onclick="nextLine()">Siguiente línea</button>
-        <button onclick="reset()">Reiniciar</button>
+
+    <div class="main-wrapper">
+        <!-- Header -->
+        <header class="page-header">
+            <h1>Typing Memorizer</h1>
+            <p class="subtitle">El Camino del Guerrero</p>
+        </header>
+
+        <!-- Tarjeta principal -->
+        <div class="card">
+            <!-- Esquinas decorativas -->
+            <div class="card-corner tl"></div>
+            <div class="card-corner tr"></div>
+            <div class="card-corner bl"></div>
+            <div class="card-corner br"></div>
+
+            <div class="card-body">
+                <!-- SECCIÓN DE SUBIDA -->
+                <div id="upload-section">
+                    <h2 class="section-title">
+                        Sube tu texto
+                        <span class="chinese-char">上传文本</span>
+                    </h2>
+
+                    <div class="upload-area" id="upload-area">
+                        <span class="upload-icon">📜</span>
+                        <p class="upload-text">Arrastra tu archivo de texto aquí</p>
+                        <p class="upload-hint">o haz clic para seleccionar un archivo .txt</p>
+
+                        <div class="file-input-wrapper">
+                            <input type="file" id="file-input" accept=".txt">
+                            <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">
+                                <span>📂</span> Elegir archivo
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="divider">◈</div>
+
+                    <p style="text-align: center; color: var(--ink-pale); font-size: 0.9rem; line-height: 1.8;">
+                        Memoriza línea por línea como un guerrero entrena su mente.<br>
+                        Escribe cada frase con precisión para avanzar en tu camino.
+                    </p>
+                </div>
+
+                <!-- SECCIÓN DE ESCRITURA -->
+                <div id="typing-section" class="typing-section">
+                    <h2 class="section-title">
+                        Escribe el texto
+                        <span class="chinese-char">书写文本</span>
+                    </h2>
+
+                    <!-- Barra de progreso -->
+                    <div class="progress-bar">
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-text" id="progress-text">0 / 0</span>
+                    </div>
+
+                    <!-- Texto a memorizar -->
+                    <div class="text-display" id="text-display">
+                        Cargando...
+                    </div>
+
+                    <!-- Input -->
+                    <div class="typing-input-wrapper">
+                        <input 
+                            type="text" 
+                            id="typing-input" 
+                            class="typing-input" 
+                            placeholder="Escribe aquí con cuidado..." 
+                            autocomplete="off"
+                            spellcheck="false"
+                        >
+                    </div>
+
+                    <!-- Feedback -->
+                    <div class="feedback neutral" id="feedback">
+                        <span class="feedback-icon">✧</span>
+                        <span>Comienza a escribir para avanzar...</span>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="btn-next" onclick="nextLine()" disabled>
+                            <span>➤</span> Siguiente línea
+                        </button>
+                        <button class="btn btn-gold" onclick="reset()">
+                            <span>↺</span> Reiniciar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ESTADO COMPLETADO -->
+                <div id="completed-state" class="completed-state">
+                    <span class="trophy">🏮</span>
+                    <h2>¡Completado!</h2>
+                    <p>Has dominado el texto con la disciplina de un guerrero.</p>
+                    <button class="btn btn-primary" onclick="reset()">
+                        <span>↺</span> Entrenar de nuevo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer decorativo -->
+        <footer style="margin-top: 40px; text-align: center; color: var(--ink-pale); font-size: 0.8rem; letter-spacing: 2px;">
+            <span style="color: var(--gold); opacity: 0.5;">❖</span>
+            <span>Disciplina · Precisión · Perseverancia</span>
+            <span style="color: var(--gold); opacity: 0.5;">❖</span>
+        </footer>
     </div>
+
     <script>
         let lines = [];
         let currentIndex = 0;
-        async function uploadFile() {
-            const file = document.getElementById('file-input').files[0];
-            if (!file) { alert('Selecciona un archivo'); return; }
-            const formData = new FormData();
-            formData.append('file', file);
-            const response = await fetch('/upload', { method: 'POST', body: formData });
-            const data = await response.json();
-            lines = data.lines;
-            currentIndex = 0;
-            document.getElementById('upload-section').classList.add('hidden');
-            document.getElementById('typing-section').classList.remove('hidden');
-            showCurrentLine();
+        let isCompleted = false;
+
+        const uploadSection = document.getElementById('upload-section');
+        const typingSection = document.getElementById('typing-section');
+        const completedState = document.getElementById('completed-state');
+        const fileInput = document.getElementById('file-input');
+        const textDisplay = document.getElementById('text-display');
+        const typingInput = document.getElementById('typing-input');
+        const feedback = document.getElementById('feedback');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const btnNext = document.getElementById('btn-next');
+        const uploadArea = document.getElementById('upload-area');
+
+        // Efecto de brillo al mover el ratón sobre upload-area
+        uploadArea.addEventListener('mousemove', (e) => {
+            const rect = uploadArea.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            uploadArea.style.setProperty('--x', x + '%');
+            uploadArea.style.setProperty('--y', y + '%');
+        });
+
+        // Manejar selección de archivo
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            await processFile(file);
+        });
+
+        // Drag & drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'var(--imperial-red)';
+            uploadArea.style.background = 'rgba(139, 26, 26, 0.06)';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = 'var(--gold)';
+            uploadArea.style.background = 'rgba(212, 175, 55, 0.04)';
+        });
+
+        uploadArea.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'var(--gold)';
+            uploadArea.style.background = 'rgba(212, 175, 55, 0.04)';
+            const file = e.dataTransfer.files[0];
+            if (file && file.name.endsWith('.txt')) {
+                await processFile(file);
+            } else {
+                showFeedback('error', 'Por favor, selecciona un archivo .txt');
+            }
+        });
+
+        async function processFile(file) {
+            try {
+                const text = await file.text();
+                // Dividir por líneas, filtrar vacías
+                lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+
+                if (lines.length === 0) {
+                    showFeedback('error', 'El archivo está vacío');
+                    return;
+                }
+
+                currentIndex = 0;
+                isCompleted = false;
+
+                // Transición de secciones
+                uploadSection.classList.add('hidden');
+                typingSection.classList.add('active');
+                completedState.classList.remove('active');
+
+                updateProgress();
+                showCurrentLine();
+            } catch (err) {
+                showFeedback('error', 'Error al leer el archivo');
+            }
         }
+
         function showCurrentLine() {
             if (currentIndex >= lines.length) {
-                document.getElementById('text-display').textContent = '¡Completado!';
-                document.getElementById('typing-input').disabled = true;
+                showCompleted();
                 return;
             }
-            document.getElementById('text-display').textContent = lines[currentIndex];
-            document.getElementById('typing-input').value = '';
-            document.getElementById('feedback').textContent = '';
-            document.getElementById('typing-input').focus();
+
+            textDisplay.textContent = lines[currentIndex];
+            typingInput.value = '';
+            typingInput.disabled = false;
+            typingInput.focus();
+            btnNext.disabled = true;
+
+            showFeedback('neutral', 'Comienza a escribir para avanzar...');
+            updateProgress();
         }
-        document.getElementById('typing-input').addEventListener('input', function(e) {
+
+        function updateProgress() {
+            const pct = lines.length > 0 ? (currentIndex / lines.length) * 100 : 0;
+            progressFill.style.width = pct + '%';
+            progressText.textContent = `${currentIndex + (isCompleted ? 1 : 0)} / ${lines.length}`;
+        }
+
+        function showFeedback(type, message) {
+            feedback.className = 'feedback ' + type;
+            const icons = {
+                correct: '✦',
+                incorrect: '✗',
+                neutral: '✧',
+                error: '⚠'
+            };
+            feedback.innerHTML = `<span class="feedback-icon">${icons[type] || '✧'}</span><span>${message}</span>`;
+        }
+
+        function showCompleted() {
+            isCompleted = true;
+            typingSection.classList.remove('active');
+            completedState.classList.add('active');
+            updateProgress();
+        }
+
+        // Evento de escritura
+        typingInput.addEventListener('input', function(e) {
             const target = lines[currentIndex];
             const typed = e.target.value;
-            const feedback = document.getElementById('feedback');
-            if (typed === target) { feedback.textContent = '✓ ¡Correcto!'; feedback.className = 'correct'; }
-            else if (target.startsWith(typed)) { feedback.textContent = 'Continúa...'; feedback.className = ''; }
-            else { feedback.textContent = '✗ Error, revisa'; feedback.className = 'incorrect'; }
+
+            if (typed === target) {
+                showFeedback('correct', '¡Perfecto! Has transcrito con precisión.');
+                btnNext.disabled = false;
+                typingInput.disabled = true;
+                // Auto-avance opcional: setTimeout(() => nextLine(), 800);
+            } else if (target.startsWith(typed)) {
+                showFeedback('neutral', 'Continúa escribiendo...');
+                btnNext.disabled = true;
+            } else {
+                showFeedback('incorrect', 'Hay un error, revisa lo escrito.');
+                btnNext.disabled = true;
+            }
         });
-        function nextLine() { currentIndex++; showCurrentLine(); }
-        function reset() { currentIndex = 0; document.getElementById('typing-input').disabled = false; showCurrentLine(); }
+
+        function nextLine() {
+            currentIndex++;
+            showCurrentLine();
+        }
+
+        function reset() {
+            currentIndex = 0;
+            isCompleted = false;
+            lines = [];
+            fileInput.value = '';
+
+            typingSection.classList.remove('active');
+            completedState.classList.remove('active');
+            uploadSection.classList.remove('hidden');
+
+            showFeedback('neutral', 'Comienza a escribir para avanzar...');
+        }
+
+        // Prevenir pegar en el input (para forzar memorización)
+        typingInput.addEventListener('paste', (e) => {
+            e.preventDefault();
+            showFeedback('incorrect', 'No puedes pegar texto. ¡Memoriza y escribe!');
+        });
     </script>
 </body>
 </html>
